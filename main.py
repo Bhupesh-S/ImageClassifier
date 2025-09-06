@@ -33,18 +33,35 @@ app.add_middleware(
 # --- Initialize Analyzer ---
 analyzer = CivicIssueAnalyzer(api_key=GOOGLE_API_KEY)
 
+# --- Mappings for user-friendly text ---
+ISSUE_TYPE_MAP = {
+    "damaged_road": "Pothole / Damaged Road",
+    "pothole": "Pothole",
+    "waste_dump": "Garbage / Waste Dump",
+    "streetlight_fault": "Streetlight not working",
+    "water_leak": "Water Leakage",
+    "graffiti": "Graffiti",
+    "sewage_overflow": "Sewage Overflow",
+    "tree_fall": "Fallen Tree",
+    "drainage_block": "Blocked Drainage",
+    "unknown_issue": "Unidentified Issue"
+}
+
+SEVERITY_MESSAGES = {
+    "low": "It is not urgent but should be resolved soon.",
+    "medium": "It may cause inconvenience if not fixed in time.",
+    "high": "It is critical and needs urgent attention."
+}
+
 
 @app.get("/")
 def root():
-    """Root endpoint to check API status."""
     return {"message": "Indian Civic Issue Analyzer API is running 🚀"}
 
 
 @app.post("/analyze")
 async def analyze_image(file: UploadFile = File(...)):
-    """
-    Upload an image to analyze the civic issue.
-    """
+    """Upload an image to analyze the civic issue."""
     allowed_extensions = {".jpg", ".jpeg", ".png", ".webp"}
     max_file_size = 5 * 1024 * 1024  # 5 MB
 
@@ -69,24 +86,32 @@ async def analyze_image(file: UploadFile = File(...)):
         if os.path.exists(tmp_file_path):
             os.remove(tmp_file_path)
 
-        # Enrich response with description
         if "error" in result:
             raise HTTPException(status_code=500, detail="Analysis failed.")
 
+        # Map issue type to readable label
         issue_type = result.get("issue_type", "unknown_issue")
-        severity = result.get("severity", "medium")
+        readable_issue = ISSUE_TYPE_MAP.get(issue_type, issue_type.replace("_", " ").capitalize())
+        result["issue_type"] = issue_type
+        result["issue_label"] = readable_issue
 
-        # Only add description if missing
+        # Handle severity
+        severity = result.get("severity", "medium").lower()
+        severity_msg = SEVERITY_MESSAGES.get(severity, "Severity not specified.")
+
+        # Generate natural description
         if "description" not in result or not result["description"]:
-            readable_issue = issue_type.replace("_", " ").capitalize()
-            result["description"] = f"{severity.capitalize()} severity issue detected: {readable_issue}."
+            result["description"] = (
+                f"The reported issue is {readable_issue}. "
+                f"{severity_msg}"
+            )
 
         return JSONResponse(content=result)
 
     except (ConfigurationError, APIResponseError):
         raise HTTPException(status_code=400, detail="Configuration or API error.")
-    except Exception:
-        raise HTTPException(status_code=500, detail="Unexpected server error.")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Unexpected server error: {str(e)}")
 
 
 if __name__ == "__main__":
