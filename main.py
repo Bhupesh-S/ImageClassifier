@@ -15,7 +15,6 @@ if not GOOGLE_API_KEY:
     raise ConfigurationError("Google API key not found in .env file. Please add GOOGLE_API_KEY.")
 
 # --- FastAPI App ---
-
 app = FastAPI(
     title="Indian Civic Issue Analyzer API",
     description="API for analyzing civic issues from uploaded images using Gemini AI.",
@@ -41,21 +40,22 @@ def root():
     return {"message": "Indian Civic Issue Analyzer API is running 🚀"}
 
 
-
 @app.post("/analyze")
 async def analyze_image(file: UploadFile = File(...)):
     """
     Upload an image to analyze the civic issue.
     """
-    # --- Security: Restrict file type and size ---
     allowed_extensions = {".jpg", ".jpeg", ".png", ".webp"}
     max_file_size = 5 * 1024 * 1024  # 5 MB
+
     suffix = os.path.splitext(file.filename)[1].lower()
     if suffix not in allowed_extensions:
         raise HTTPException(status_code=400, detail="Invalid file type. Only images are allowed.")
+
     contents = await file.read()
     if len(contents) > max_file_size:
         raise HTTPException(status_code=400, detail="File too large. Max size is 5MB.")
+
     try:
         # Save file temporarily
         with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp_file:
@@ -69,19 +69,25 @@ async def analyze_image(file: UploadFile = File(...)):
         if os.path.exists(tmp_file_path):
             os.remove(tmp_file_path)
 
-        # Return result
+        # Enrich response with description
         if "error" in result:
-            # Sanitize error message
             raise HTTPException(status_code=500, detail="Analysis failed.")
+
+        issue_type = result.get("issue_type", "unknown_issue")
+        severity = result.get("severity", "medium")
+
+        # Only add description if missing
+        if "description" not in result or not result["description"]:
+            readable_issue = issue_type.replace("_", " ").capitalize()
+            result["description"] = f"{severity.capitalize()} severity issue detected: {readable_issue}."
+
         return JSONResponse(content=result)
 
-    except (ConfigurationError, APIResponseError) as e:
+    except (ConfigurationError, APIResponseError):
         raise HTTPException(status_code=400, detail="Configuration or API error.")
     except Exception:
         raise HTTPException(status_code=500, detail="Unexpected server error.")
 
 
 if __name__ == "__main__":
-    # Run the FastAPI app
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
-
