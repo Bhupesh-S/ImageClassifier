@@ -100,11 +100,10 @@ async def analyze_image(file: UploadFile = File(...)):
         severity_msg = SEVERITY_MESSAGES.get(severity, "Severity not specified.")
 
         # Generate natural description
-        if "description" not in result or not result["description"]:
-            result["description"] = (
-                f"The reported issue is {readable_issue}. "
-                f"{severity_msg}"
-            )
+        result["description"] = result.get("description", "").strip()
+        if not result["description"]:
+    # Fallback only if Gemini fails
+            result["description"] = f"A {readable_issue.lower()} was detected. {severity_msg}"
 
         return JSONResponse(content=result)
 
@@ -116,3 +115,4 @@ async def analyze_image(file: UploadFile = File(...)):
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+
