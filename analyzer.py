@@ -53,69 +53,55 @@ class CivicIssueAnalyzer:
         self.VALID_ISSUE_TYPES = list(self.mapping_data.keys())
         self.VALID_SEVERITY = ['high', 'medium', 'low', 'none']
 
-    def _create_prompt(self) -> str:
+        def _create_prompt(self) -> str:
         """Creates a simplified, focused prompt for the AI."""
-        return f"""
-        You are a specialized AI assistant for a civic monitoring app. Your only task is to analyze the
-        provided image and identify the primary civic issue.
+            return f"""
+            You are a specialized AI assistant for a civic monitoring app. Your only task is to analyze the
+            provided image and identify the primary civic issue.
 
-        The JSON object you return must contain exactly three keys:
+            The JSON object you return must contain exactly four keys:
         1. 'issue_type': Classify the issue from this list: {self.VALID_ISSUE_TYPES}.
         2. 'severity': Rate the issue's severity from this list: {self.VALID_SEVERITY}.
         3. 'confidence': A float between 0.0 and 1.0 for your classification confidence.
+        4. 'description': Write 1–2 natural sentences describing the issue in plain language.
 
         Respond only with the raw JSON object.
         """
 
-    def _validate_ai_response(self, response_text: str) -> Dict[str, Any]:
+        def _validate_ai_response(self, response_text: str) -> Dict[str, Any]:
         """Parses and validates only the JSON response from the Gemini API."""
-        try:
-            clean_text = response_text.strip().replace("```json", "").replace("```", "").strip()
-            data = json.loads(clean_text)
-        except json.JSONDecodeError:
-            raise APIResponseError(f"Failed to decode API response as JSON. Response: {response_text}")
+            try:
+                clean_text = response_text.strip().replace("```json", "").replace("```", "").strip()
+                data = json.loads(clean_text)
+            except json.JSONDecodeError:
+                raise APIResponseError(f"Failed to decode API response as JSON. Response: {response_text}")
 
-        required_keys = ['issue_type', 'severity', 'confidence']
-        for key in required_keys:
-            if key not in data:
-                raise APIResponseError(f"API response missing required key: '{key}'. Response: {data}")
+            required_keys = ['issue_type', 'severity', 'confidence', 'description']
+            for key in required_keys:
+                if key not in data:
+                    raise APIResponseError(f"API response missing required key: '{key}'. Response: {data}")
 
-        if data['issue_type'] not in self.VALID_ISSUE_TYPES:
-            logging.warning(f"AI returned an unexpected 'issue_type' label: {data['issue_type']}")
+            if data['issue_type'] not in self.VALID_ISSUE_TYPES:
+                logging.warning(f"AI returned an unexpected 'issue_type' label: {data['issue_type']}")
 
-        return data
+            return data
 
-    def analyze_image(self, image_path: str) -> Dict[str, Any]:
-        """Analyzes an image, then enriches the result with data from the mapping file."""
-        logging.info(f"Starting analysis for image: {image_path}")
-        if not os.path.exists(image_path):
-            return {"error": "Image file not found."}
-
-        try:
-            img = Image.open(image_path)
-            prompt = self._create_prompt()
-            
-            logging.info("Sending request to Gemini API for issue identification...")
-            response = self.model.generate_content([prompt, img])
-            img.close()
-            
+        def analyze_image(self, image_path: str) -> Dict[str, Any]:
+        ...
             ai_result = self._validate_ai_response(response.text)
-            
-            # --- Enrichment Step ---
-            # Look up department and responsibility details from the mapping file
+
             issue_type = ai_result.get('issue_type')
             mapping_details = self.mapping_data.get(issue_type, {})
-            
-            # Combine the AI result with the mapping details
+
             final_result = {
-                **ai_result,
-                "department": mapping_details.get("department", "N/A"),
-                "responsible": mapping_details.get("responsible", "N/A")
+            **ai_result,
+            "department": mapping_details.get("department", "N/A"),
+            "responsible": mapping_details.get("responsible", "N/A")
             }
-            
-            logging.info(f"Analysis and mapping successful for {image_path}")
             return final_result
+
 
         except Exception as e:
             logging.error(f"An unexpected error occurred during analysis: {e}", exc_info=True)
+
             return {"error": str(e)}
