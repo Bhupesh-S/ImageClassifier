@@ -1,0 +1,134 @@
+{
+  "pothole": {
+    "department": "Engineering - Roads",
+    "responsible": "Chief Municipal Engineer"
+  },
+  "damaged_road": {
+    "department": "Engineering - Roads",
+    "responsible": "Chief Municipal Engineer"
+  },
+  "illegal_speed_breaker": {
+    "department": "Engineering - Roads",
+    "responsible": "Municipal Commissioner"
+  },
+  "streetlight_not_working": {
+    "department": "Electrical/Engineering",
+    "responsible": "Chief Engineer"
+  },
+  "broken_pole": {
+    "department": "Electrical/Engineering",
+    "responsible": "Chief Engineer"
+  },
+  "garbage_overflow": {
+    "department": "Sanitation & Solid Waste",
+    "responsible": "Health Officer"
+  },
+  "illegal_dumping": {
+    "department": "Sanitation & Solid Waste",
+    "responsible": "Health Officer"
+  },
+  "open_drainage": {
+    "department": "Sewerage/Engineering",
+    "responsible": "Chief Engineer"
+  },
+  "blocked_drainage": {
+    "department": "Sewerage/Engineering",
+    "responsible": "Chief Engineer"
+  },
+  "sewage_overflow": {
+    "department": "Sewerage/Engineering",
+    "responsible": "Chief Engineer"
+  },
+  "water_leakage": {
+    "department": "Water Supply & Sewerage",
+    "responsible": "Water Supply Officer"
+  },
+  "no_water_supply": {
+    "department": "Water Supply & Sewerage",
+    "responsible": "Chief Water Supply Officer"
+  },
+  "broken_pipeline": {
+    "department": "Water Supply & Sewerage",
+    "responsible": "Water Supply Officer"
+  },
+  "illegal_water_connection": {
+    "department": "Water Supply & Sewerage",
+    "responsible": "Water Supply Officer"
+  },
+  "encroachment_on_road": {
+    "department": "Town Planning",
+    "responsible": "Chief Town Planner"
+  },
+  "illegal_construction": {
+    "department": "Town Planning",
+    "responsible": "Chief Town Planner"
+  },
+  "slum_encroachment": {
+    "department": "Town Planning & Revenue",
+    "responsible": "Municipal Commissioner"
+  },
+  "broken_public_toilet": {
+    "department": "Sanitation & Health",
+    "responsible": "Health Officer"
+  },
+  "public_toilet_unhygienic": {
+    "department": "Sanitation & Health",
+    "responsible": "Health Officer"
+  },
+  "stray_animals": {
+    "department": "Animal Control",
+    "responsible": "Veterinary Officer"
+  },
+  "dead_animal": {
+    "department": "Sanitation & Animal Control",
+    "responsible": "Sanitation Inspector"
+  },
+  "tree_fallen": {
+    "department": "Garden & Tree Department",
+    "responsible": "Garden Supervisor"
+  },
+  "tree_branch_blocking_road": {
+    "department": "Garden & Tree Department",
+    "responsible": "Garden Officer"
+  },
+  "open_manhole": {
+    "department": "Sewerage/Drainage",
+    "responsible": "Chief Engineer"
+  },
+  "damaged_footpath": {
+    "department": "Engineering - Roads & Footpaths",
+    "responsible": "Chief Engineer"
+  },
+  "broken_traffic_signal": {
+    "department": "Electrical/Traffic",
+    "responsible": "Chief Engineer"
+  },
+  "overflowing_dustbin": {
+    "department": "Solid Waste Management",
+    "responsible": "Sanitation Inspector"
+  },
+  "illegal_hoarding": {
+    "department": "Revenue/Advertisement",
+    "responsible": "Municipal Commissioner"
+  },
+  "market_hygiene_issue": {
+    "department": "Sanitation & Health",
+    "responsible": "Health Officer"
+  },
+  "mosquito_breeding": {
+    "department": "Public Health",
+    "responsible": "Chief Municipal Health Officer"
+  },
+  "open_burning_of_garbage": {
+    "department": "Sanitation & Pollution Control",
+    "responsible": "Environmental Engineer"
+  },
+  "school_building_damaged": {
+    "department": "Municipal Education & Engineering",
+    "responsible": "Education Officer"
+  },
+  "playground_not_maintained": {
+    "department": "Parks & Recreation",
+    "responsible": "Garden Officer"
+  }
+}
