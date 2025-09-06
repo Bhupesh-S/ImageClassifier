@@ -25,11 +25,7 @@ app = FastAPI(
 # --- CORS Configuration ---
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://yourdomain.com",           # Web frontend
-        "http://localhost:19006",           # Expo Go local dev
-        "http://10.0.2.16:19006"         # Expo Go on LAN (replace with your actual port if different           # Optional: local web dev
-    ],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -88,3 +84,4 @@ async def analyze_image(file: UploadFile = File(...)):
 if __name__ == "__main__":
     # Run the FastAPI app
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+
