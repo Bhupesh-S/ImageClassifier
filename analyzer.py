@@ -27,7 +27,7 @@ class CivicIssueAnalyzer:
         if not api_key:
             raise ConfigurationError("Google API key not provided.")
         genai.configure(api_key=api_key)
-        self.model = genai.GenerativeModel('gemini-1.5-flash-latest')
+        self.model = genai.GenerativeModel('gemini-2.5-flash-lite')
 
         # Load mapping.json
         try:
@@ -105,3 +105,4 @@ class CivicIssueAnalyzer:
         except Exception as e:
             logging.error(f"Unexpected error during analysis: {e}", exc_info=True)
             return {"error": str(e)}
+
