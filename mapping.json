@@ -71,9 +71,6 @@
   "open_manhole": {
     "department": "Sewerage/Drainage"
   },
-  "damaged_footpath": {
-    "department": "Roads & Footpaths"
-  },
   "broken_traffic_signal": {
     "department": "Electrical/Traffic"
   },
@@ -82,20 +79,6 @@
   },
   "illegal_hoarding": {
     "department": "Revenue/Advertisement"
-  },
-  "market_hygiene_issue": {
-    "department": "Sanitation & Health"
-  },
-  "mosquito_breeding": {
-    "department": "Public Health"
-  },
-  "open_burning_of_garbage": {
-    "department": "Sanitation & Pollution Control"
-  },
-  "school_building_damaged": {
-    "department": "Municipal Education"
-  },
-  "playground_not_maintained": {
-    "department": "Parks & Recreation"
   }
 }
+
