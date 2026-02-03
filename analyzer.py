@@ -5,13 +5,13 @@ from typing import Dict, Any
 from PIL import Image
 import google.generativeai as genai
 
-# --- Logging configuration ---
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 
-# --- Custom exceptions ---
+
 class ConfigurationError(Exception):
     pass
 
@@ -29,7 +29,7 @@ class CivicIssueAnalyzer:
         genai.configure(api_key=api_key)
         self.model = genai.GenerativeModel('gemini-2.5-flash')
 
-        # Load mapping.json
+
         try:
             with open(mapping_file, 'r') as f:
                 self.mapping_data = json.load(f)
@@ -39,7 +39,7 @@ class CivicIssueAnalyzer:
         except json.JSONDecodeError:
             raise ConfigurationError(f"Error decoding mapping.json. Check its format.")
 
-        # Valid categories and severities
+
         self.VALID_ISSUE_TYPES = list(self.mapping_data.keys())
         self.VALID_SEVERITY = ['high', 'medium', 'low', 'none']
 
@@ -65,13 +65,13 @@ class CivicIssueAnalyzer:
         except json.JSONDecodeError:
             raise APIResponseError(f"Failed to parse JSON from AI response: {response_text}")
 
-        # Ensure all keys exist
+
         required_keys = ['issue_type', 'severity', 'confidence', 'description']
         for key in required_keys:
             if key not in data:
                 raise APIResponseError(f"Missing key '{key}' in AI response: {data}")
 
-        # Ensure issue_type is valid
+
         if data['issue_type'] not in self.VALID_ISSUE_TYPES:
             logging.warning(f"Invalid category '{data['issue_type']}', defaulting to 'unknown_issue'")
             data['issue_type'] = "unknown_issue"
@@ -91,7 +91,7 @@ class CivicIssueAnalyzer:
 
             ai_result = self._validate_ai_response(response.text)
 
-            # Set department/responsible based on mapping.json
+
             category = ai_result['issue_type']
             mapping_details = self.mapping_data.get(category, {})
             final_result = {
@@ -105,5 +105,6 @@ class CivicIssueAnalyzer:
         except Exception as e:
             logging.error(f"Unexpected error during analysis: {e}", exc_info=True)
             return {"error": str(e)}
+
 
 
