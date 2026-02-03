@@ -7,9 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from analyzer import CivicIssueAnalyzer, ConfigurationError, APIResponseError
 
-# ------------------------------
-# Jharkhand District Classification
-# ------------------------------
+
 jharkhand_districts = [
     "Bokaro", "Chatra", "Deoghar", "Dhanbad", "Dumka", "East Singhbhum",
     "Garhwa", "Giridih", "Godda", "Gumla", "Hazaribagh", "Jamtara", "Khunti",
@@ -26,24 +24,18 @@ def classify_location(address: str) -> str:
             return district
     return "Jharkhand (District Unknown)"
 
-# ------------------------------
-# Load Environment Variables
-# ------------------------------
 load_dotenv()
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 if not GOOGLE_API_KEY:
     raise ConfigurationError("Google API key not found in .env file. Please add GOOGLE_API_KEY.")
 
-# ------------------------------
-# FastAPI App Setup
-# ------------------------------
+
 app = FastAPI(
     title="Indian Civic Issue Analyzer API",
     description="API for analyzing civic issues from uploaded images using Gemini AI.",
     version="1.0.0"
 )
 
-# CORS configuration
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -56,16 +48,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Initialize Analyzer
+
 analyzer = CivicIssueAnalyzer(api_key=GOOGLE_API_KEY)
 
-# ------------------------------
-# API Endpoints
-# ------------------------------
 @app.get("/")
 def root():
     """Root endpoint to check API status."""
-    return {"message": "Indian Civic Issue Analyzer API is running 🚀"}
+    return {"message": "Indian Civic Issue Analyzer API is running"}
 
 
 @app.post("/analyze")
@@ -110,9 +99,6 @@ def classify_district(address: str = Query(..., description="Full location addre
     district = classify_location(address)
     return {"address": address, "district": district}
 
-
-# ------------------------------
-# Run App
-# ------------------------------
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+
